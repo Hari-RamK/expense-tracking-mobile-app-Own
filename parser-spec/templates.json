@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "notes": [
+    "Language-neutral parser spec. The Kotlin :core module will load this same file; parser-spec/run.mjs validates it today.",
+    "Regex dialect: the common subset of JavaScript and Java (named groups are camelCase alphanumeric, no lookbehind). Bodies are whitespace-normalised to single spaces before matching.",
+    "First match wins, but a body matching more than one template is a fixture failure (ambiguity).",
+    "Never invent data: a field not captured stays absent. Bodies matching nothing are UNPARSED (kept for review), never dropped."
+  ],
+  "macros": {
+    "NUM": "[\\d,]+(?:\\.\\d{1,2})?",
+    "AMT": "(?:Rs\\.?|INR) ?(?<amount>{{NUM}})",
+    "BAL": "(?:Rs\\.?|INR) ?(?<balance>{{NUM}})",
+    "MIN": "(?:Rs\\.?|INR) ?(?<minDue>{{NUM}})"
+  },
+  "templates": [
+    {
+      "id": "upi_sent_to_payee_a",
+      "eventKind": "UPI_DEBIT",
+      "direction": "DEBIT",
+      "method": "UPI",
+      "dateFormat": "dd-MM-yy",
+      "regex": "^Sent {{AMT}} from (?<bank>.+?) A/c X(?<acct>\\d+) to (?<payee>.+?) on (?<date>\\d{2}-\\d{2}-\\d{2})\\. UPI Ref (?<ref>\\d+)"
+    },
+    {
+      "id": "acct_debited_credited_to_acct",
+      "eventKind": "UPI_DEBIT",
+      "direction": "DEBIT",
+      "method": "UPI",
+      "dateFormat": "dd-MM-yyyy",
+      "regex": "^Your a/c no\\. X+(?<acct>\\d+) is debited for {{AMT}} on (?<date>\\d{2}-\\d{2}-\\d{4}) and credited to a/c no\\. X+(?<cpAcct>\\d+) \\(UPI Ref no (?<ref>\\d+)\\)(?: -(?<bankTag>[A-Za-z ]+))?"
+    },
+    {
+      "id": "upi_received_from_payer",
+      "eventKind": "UPI_CREDIT",
+      "direction": "CREDIT",
+      "method": "UPI",
+      "dateFormat": "dd-MM-yy",
+      "regex": "^Received {{AMT}} in your (?<bank>.+?) AC (?<acct>\\d+) from (?<payer>.+?) on (?<date>\\d{2}-\\d{2}-\\d{2})\\. ?UPI Ref: ?(?<ref>\\d+)"
+    },
+    {
+      "id": "acct_credited_debited_from_acct",
+      "eventKind": "UPI_CREDIT",
+      "direction": "CREDIT",
+      "method": "UPI",
+      "dateFormat": "dd-MM-yyyy",
+      "regex": "^Your a/c no\\. X+(?<acct>\\d+) is credited for {{AMT}} on (?<date>\\d{2}-\\d{2}-\\d{4}) and debited from a/c no\\. X+(?<cpAcct>\\d+) \\(UPI Ref no (?<ref>\\d+)\\)(?: -(?<bankTag>[A-Za-z ]+))?"
+    },
+    {
+      "id": "credit_card_upi_debit",
+      "eventKind": "CARD_DEBIT",
+      "direction": "DEBIT",
+      "method": "CARD_UPI",
+      "accountKindHint": "CREDIT_CARD",
+      "dateFormat": "dd-MMM-yy",
+      "regex": "^(?<bank>[A-Za-z ]+?) Bank Credit Card XX(?<acct>\\d+) debited for {{AMT}} on (?<date>\\d{2}-[A-Za-z]{3}-\\d{2}) for UPI-(?<ref>\\d+)-(?<payee>.+?)\\."
+    },
+    {
+      "id": "upi_debited_via_upi_to_payee_with_balance",
+      "eventKind": "UPI_DEBIT",
+      "direction": "DEBIT",
+      "method": "UPI",
+      "dateFormat": "ddMMMyy",
+      "regex": "^Debited {{AMT}} from a/c X(?<acct>\\d+) on (?<date>\\d{2}[A-Za-z]{3}\\d{2}) (?<time>\\d{2}:\\d{2}) via UPI to (?<payee>.+?)\\. Ref (?<ref>\\d+)\\.Bal {{BAL}}\\.(?:.*-(?<bankTag>[A-Za-z ]+))?$"
+    },
+    {
+      "id": "savings_credited_towards_narration",
+      "eventKind": "BANK_CREDIT",
+      "direction": "CREDIT",
+      "method": "NACH",
+      "dateFormat": "dd-MMM-yyyy",
+      "regex": "^Savings No X+(?<acct>\\d+) credited with {{AMT}} towards (?<desc>.+?) on (?<date>\\d{2}-[A-Za-z]{3}-\\d{4})\\.Avl Bal (?<balance>{{NUM}})"
+    },
+    {
+      "id": "salary_credited",
+      "eventKind": "SALARY_CREDIT",
+      "direction": "CREDIT",
+      "method": "SALARY",
+      "typeHint": "SALARY",
+      "dateFormat": null,
+      "regex": "^Salary Credited! {{AMT}} to (?<bank>.+?) A/c X+(?<acct>\\d+) Bal: {{BAL}}"
+    },
+    {
+      "id": "emandate_upcoming_debit",
+      "eventKind": "MANDATE_NOTICE",
+      "direction": "DEBIT",
+      "method": "MANDATE",
+      "isTransaction": false,
+      "dateFormat": "dd/MM/yy",
+      "dateAs": "dueDate",
+      "regex": "^E-Mandate! {{AMT}} will be deducted on (?<date>\\d{2}/\\d{2}/\\d{2}), \\d{2}:\\d{2}:\\d{2} For (?<payee>.+?) mandate UMN (?<umn>\\S+)(?:.*-(?<bankTag>[A-Za-z ]+))?$"
+    },
+    {
+      "id": "tmb_debit_to_linked_vpa",
+      "eventKind": "UPI_DEBIT",
+      "direction": "DEBIT",
+      "method": "UPI",
+      "dateFormat": "dd-MM-yyyy",
+      "regex": "^Your A/c No\\.X+(?<acct>\\d+) is debited with {{AMT}} on (?<date>\\d{2}-\\d{2}-\\d{4}) (?<time>\\d{1,2}:\\d{2} [AP]M) and (?<cpBankCode>[A-Z]+) A/c linked to (?<cpVpa>\\S+) is credited \\(UPI Ref No\\.(?<ref>\\d+)\\)\\.Current AVBL bal is {{BAL}} - (?<bankTag>[A-Za-z ]+)$"
+    },
+    {
+      "id": "insurance_premium_due_notice",
+      "eventKind": "PREMIUM_DUE",
+      "direction": null,
+      "method": "STANDING_INSTRUCTION",
+      "isTransaction": false,
+      "dateFormat": "dd-MMM-yy",
+      "dateAs": "dueDate",
+      "regex": "^ICICI Life policy (?<policy>\\S+) is due\\. Premium of {{AMT}} will be deducted on due date (?<date>\\d{2}-[A-Za-z]{3}-\\d{2}) as per standing instructions\\."
+    },
+    {
+      "id": "autodebit_advance_notice",
+      "eventKind": "AUTODEBIT_NOTICE",
+      "direction": "DEBIT",
+      "method": "AUTODEBIT",
+      "isTransaction": false,
+      "dateFormat": "dd-MMM-yyyy",
+      "dateAs": "dueDate",
+      "regex": "^{{AMT}} auto-debited from (?<bank>Airtel Payments Bank) a/c (?<date>\\d{2}-[A-Za-z]{3}-\\d{4}) towards (?<payee>.+?) Please maintain sufficient balance"
+    },
+    {
+      "id": "sbi_card_outstanding_due",
+      "eventKind": "STATEMENT_DUE",
+      "direction": null,
+      "method": "CARD_BILL",
+      "accountKindHint": "CREDIT_CARD",
+      "isTransaction": false,
+      "dateFormat": "dd-MMM-yy",
+      "dateAs": "dueDate",
+      "regex": "^Dear (?<bank>SBI) Cardholder, outstanding of {{AMT}}, on your credit card ending (?<acct>\\d+) is due on (?<date>\\d{2}-[A-Za-z]{3}-\\d{2})\\. Min\\. Amount Due: {{MIN}}\\."
+    },
+    {
+      "id": "credit_card_statement_total_and_min_due",
+      "eventKind": "STATEMENT_DUE",
+      "direction": null,
+      "method": "CARD_BILL",
+      "accountKindHint": "CREDIT_CARD",
+      "isTransaction": false,
+      "dateFormat": "dd-MMM-yy",
+      "dateAs": "dueDate",
+      "regex": "^(?<bank>[A-Za-z ]+?) Bank Credit Card XX(?<acct>\\d+) Statement is sent to \\S+\\. Total of {{AMT}} or minimum of {{MIN}} is due by (?<date>\\d{2}-[A-Za-z]{3}-\\d{2})\\."
+    }
+  ],
+  "ignore": [
+    { "id": "otp", "reason": "OTP", "regex": "\\b(?:OTP|one[- ]time password)\\b" },
+    { "id": "promo", "reason": "PROMOTION", "regex": "\\b(?:pre-approved|apply now|T&C apply|limited period offer)\\b" }
+  ]
+}

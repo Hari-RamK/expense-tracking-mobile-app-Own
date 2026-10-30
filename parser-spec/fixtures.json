@@ -1,0 +1,164 @@
+{
+  "notes": [
+    "SANITISED fixtures. Message shapes come from real bank SMS; every name, number, reference and balance is fake.",
+    "Test profile: owner name ARUN KUMAR S; own accounts Kotak 2126, CUB 1756, Federal 3268, HDFC 7345, ICICI card 9000. 0421 is NOT an own account.",
+    "Never commit real SMS. Keep real samples in the git-ignored private/ folder."
+  ],
+  "cases": [
+    {
+      "id": "kotak_upi_to_cred",
+      "sender": "AX-KOTAKB-S",
+      "body": "Sent Rs.9261.34 from Kotak Bank A/c X2126 to CRED on 30-10-26. UPI Ref 630382500001. Not done by you? Tap https://kotak.bank.in/KBANKT/Fraud\nReport Fraud / Raise Dispute - Kotak Mahindra Bank",
+      "expect": { "result": "PARSED", "templateId": "upi_sent_to_payee_a", "eventKind": "UPI_DEBIT", "direction": "DEBIT", "amountPaise": 926134, "bank": "Kotak Bank", "accountSuffix": "2126", "counterpartyName": "CRED", "ref": "630382500001", "date": "2026-10-30", "senderBrand": "KOTAKB", "institution": "KOTAK" }
+    },
+    {
+      "id": "cub_debit_to_own_account",
+      "sender": "AD-CUBLTD-S",
+      "body": "Your a/c no. XXXXXXXX1756 is debited for Rs.2400.00 on 30-10-2026 and credited to a/c no. XXXXXXXX2126 (UPI Ref no 219279760002)",
+      "expect": { "result": "PARSED", "templateId": "acct_debited_credited_to_acct", "direction": "DEBIT", "amountPaise": 240000, "accountSuffix": "1756", "counterpartyAcctSuffix": "2126", "ref": "219279760002", "date": "2026-10-30", "senderBrand": "CUBLTD", "institution": "CUB" }
+    },
+    {
+      "id": "kotak_received_from_own_name",
+      "body": "Received Rs.5498.00 in your Kotak Bank AC 2126 from ARUN KUMAR S on 30-10-26.UPI Ref:219279920003",
+      "expect": { "result": "PARSED", "templateId": "upi_received_from_payer", "direction": "CREDIT", "amountPaise": 549800, "bank": "Kotak Bank", "accountSuffix": "2126", "counterpartyName": "ARUN KUMAR S", "ref": "219279920003", "date": "2026-10-30" }
+    },
+    {
+      "id": "cub_credit_from_other_account",
+      "sender": "AX-CUBANK-S",
+      "body": "Your a/c no. XXXXXXXX1756 is credited for Rs.500.00 on 30-10-2026 and debited from a/c no. XXXXXXXX0421 (UPI Ref no 666931720004) -CUB",
+      "expect": { "result": "PARSED", "templateId": "acct_credited_debited_from_acct", "direction": "CREDIT", "amountPaise": 50000, "accountSuffix": "1756", "counterpartyAcctSuffix": "0421", "ref": "666931720004", "bank": "CUB", "date": "2026-10-30", "senderBrand": "CUBANK", "institution": "CUB" }
+    },
+    {
+      "id": "icici_card_upi_spend",
+      "body": "ICICI Bank Credit Card XX9000 debited for INR 290.00 on 29-Oct-26 for UPI-223643760005-SWASTIK. To dispute call 18000000000/SMS BLOCK 9000 to 9200000000",
+      "expect": { "result": "PARSED", "templateId": "credit_card_upi_debit", "direction": "DEBIT", "accountKindHint": "CREDIT_CARD", "amountPaise": 29000, "bank": "ICICI", "accountSuffix": "9000", "counterpartyName": "SWASTIK", "ref": "223643760005", "date": "2026-10-29" }
+    },
+    {
+      "id": "federal_upi_to_person",
+      "body": "Debited Rs 135.00 from a/c X3268 on 29Oct26 16:44 via UPI to RAVI TEJA M. Ref 630255820006.Bal Rs 15720.22. Not you?Call 18000000000 -Federal Bank",
+      "expect": { "result": "PARSED", "templateId": "upi_debited_via_upi_to_payee_with_balance", "direction": "DEBIT", "amountPaise": 13500, "accountSuffix": "3268", "counterpartyName": "RAVI TEJA M", "ref": "630255820006", "balancePaise": 1572022, "bank": "Federal Bank", "date": "2026-10-29", "time": "16:44" }
+    },
+    {
+      "id": "nach_credit_two_digit_account",
+      "body": "Savings No XXXXXXXX56 credited with INR 22695.00 towards BY ONL NACH_CR/PAYMENT FOR PF ADVAN/ACH_CR/CMP0000000:: CA 5 on 29-OCT-2026.Avl Bal 22730.79",
+      "expect": { "result": "PARSED", "templateId": "savings_credited_towards_narration", "eventKind": "BANK_CREDIT", "direction": "CREDIT", "amountPaise": 2269500, "accountSuffix": "56", "balancePaise": 2273079, "date": "2026-10-29", "description": "BY ONL NACH_CR/PAYMENT FOR PF ADVAN/ACH_CR/CMP0000000:: CA 5" }
+    },
+    {
+      "id": "hdfc_salary_multiline",
+      "body": "Salary Credited!\nINR 45,333.00 to HDFC Bank A/c XX7345\nBal: INR 45,483.86\nGet statement and more on WhatsApp: https://1.hdfc.bank.in/HDFCBK/s/a/xxxxxxxx",
+      "expect": { "result": "PARSED", "templateId": "salary_credited", "eventKind": "SALARY_CREDIT", "typeHint": "SALARY", "direction": "CREDIT", "amountPaise": 4533300, "bank": "HDFC Bank", "accountSuffix": "7345", "balancePaise": 4548386 }
+    },
+    {
+      "id": "emandate_notice_not_a_transaction",
+      "body": "E-Mandate!\nRs.1999.00 will be deducted on 13/08/26, 00:00:00\nFor Example Life Insurance Company Limited mandate\nUMN 0000aaaa0000bbbb0000cccc0000dddd@ptsbi\nMaintain Balance\n-HDFC Bank",
+      "expect": { "result": "PARSED", "templateId": "emandate_upcoming_debit", "eventKind": "MANDATE_NOTICE", "isTransaction": false, "amountPaise": 199900, "counterpartyName": "Example Life Insurance Company Limited", "bank": "HDFC Bank", "dueDate": "2026-08-13" }
+    },
+    {
+      "id": "tmb_debit_to_own_vpa_same_ref_as_kotak_credit",
+      "sender": "JM-TMBANK-S",
+      "body": "Your A/c No.XXXX4160 is debited with Rs.5,498.00 on 30-10-2026 10:56 AM and KKBK A/c linked to arun.kumar@example is credited (UPI Ref No.219279920003).Current AVBL bal is Rs.0.50 - TMB",
+      "expect": { "result": "PARSED", "templateId": "tmb_debit_to_linked_vpa", "direction": "DEBIT", "amountPaise": 549800, "accountSuffix": "4160", "date": "2026-10-30", "time": "10:56", "counterpartyBankCode": "KKBK", "counterpartyVpa": "arun.kumar@example", "ref": "219279920003", "balancePaise": 50, "bank": "TMB", "institution": "TMB" }
+    },
+    {
+      "id": "federal_upi_to_own_name",
+      "sender": "VM-FEDBNK-T",
+      "body": "Debited Rs 1336.00 from a/c X3268 on 30Oct26 11:00 via UPI to ARUN KUMAR S. Ref 219280170007.Bal Rs 14384.22. Not you?Call 18000000000 -Federal Bank",
+      "expect": { "result": "PARSED", "templateId": "upi_debited_via_upi_to_payee_with_balance", "direction": "DEBIT", "amountPaise": 133600, "accountSuffix": "3268", "counterpartyName": "ARUN KUMAR S", "ref": "219280170007", "balancePaise": 1438422, "date": "2026-10-30", "time": "11:00", "institution": "FEDERAL" }
+    },
+    {
+      "id": "icici_life_premium_due_notice",
+      "sender": "AD-ICICIP-S",
+      "body": "ICICI Life policy K0000001 is due. Premium of Rs. 1999 will be deducted on due date 13-Nov-26 as per standing instructions. You may choose to pay in advance now at https://example.invalid/a Click https://example.invalid/b to view details or download premium notice.",
+      "expect": { "result": "PARSED", "templateId": "insurance_premium_due_notice", "eventKind": "PREMIUM_DUE", "isTransaction": false, "policyRef": "K0000001", "amountPaise": 199900, "dueDate": "2026-11-13", "institution": "ICICI_LIFE", "institutionKind": "INSURER" }
+    },
+    {
+      "id": "airtel_apy_autodebit_advance_notice",
+      "sender": "AX-AIRBNK-S",
+      "body": "Rs.5293.0 auto-debited from Airtel Payments Bank a/c 04-Sep-2026 towards Atal Pension Yojana\nPlease maintain sufficient balance in the A/c",
+      "expect": { "result": "PARSED", "templateId": "autodebit_advance_notice", "eventKind": "AUTODEBIT_NOTICE", "isTransaction": false, "amountPaise": 529300, "dueDate": "2026-09-04", "counterpartyName": "Atal Pension Yojana", "institution": "AIRTEL_PAYMENTS_BANK", "noticeKey": "AUTODEBIT_NOTICE|529300|2026-09-04|Atal Pension Yojana" }
+    },
+    {
+      "id": "muted_sender_is_ignored_before_parsing",
+      "sender": "VA-MONVEW-S",
+      "body": "Your next EMI is due on 05 November. Pay now to avoid charges.",
+      "expect": { "result": "IGNORED", "reason": "MUTED_SENDER", "senderBrand": "MONVEW" }
+    },
+    {
+      "id": "sbi_card_due_notice",
+      "body": "Dear SBI Cardholder, outstanding of Rs. 18250.00, on your credit card ending 8100 is due on 10-OCT-26. Min. Amount Due: Rs. 365.00. Please ignore if already paid. Click here: https://example.invalid/quickpay to make online payment.",
+      "expect": { "result": "PARSED", "templateId": "sbi_card_outstanding_due", "eventKind": "STATEMENT_DUE", "isTransaction": false, "accountKindHint": "CREDIT_CARD", "bank": "SBI", "accountSuffix": "8100", "amountPaise": 1825000, "minDuePaise": 36500, "dueDate": "2026-10-10" }
+    },
+    {
+      "id": "icici_card_statement_due_notice",
+      "body": "ICICI Bank Credit Card XX9000 Statement is sent to ar*******@example.com. Total of Rs 11,020.40 or minimum of Rs 3,700.00 is due by 20-OCT-26.",
+      "expect": { "result": "PARSED", "templateId": "credit_card_statement_total_and_min_due", "eventKind": "STATEMENT_DUE", "isTransaction": false, "bank": "ICICI", "accountSuffix": "9000", "amountPaise": 1102040, "minDuePaise": 370000, "dueDate": "2026-10-20" }
+    },
+    {
+      "id": "unknown_sender_brand_is_not_guessed",
+      "sender": "AD-NEWBNK-S",
+      "body": "Sent Rs.10.00 from Kotak Bank A/c X2126 to SHOP on 30-10-26. UPI Ref 630382500009.",
+      "expect": { "result": "PARSED", "senderBrand": "NEWBNK", "institution": null }
+    },
+    {
+      "id": "otp_is_ignored",
+      "body": "482913 is your OTP for login to ExampleBank. Do not share it with anyone.",
+      "expect": { "result": "IGNORED", "reason": "OTP" }
+    },
+    {
+      "id": "promo_is_ignored",
+      "body": "Pre-approved loan of Rs.5,00,000 for you! Apply now at example.bank",
+      "expect": { "result": "IGNORED", "reason": "PROMOTION" }
+    },
+    {
+      "id": "impossible_date_is_kept_for_review_not_guessed",
+      "body": "Sent Rs.10.00 from Kotak Bank A/c X2126 to SHOP on 31-02-26. UPI Ref 630382500010.",
+      "expect": { "result": "UNPARSED", "reason": "INVALID_FIELD" }
+    },
+    {
+      "id": "unknown_format_is_kept_not_dropped",
+      "body": "Rs 100.00 spent via NewBank format at SHOP on 29-10-26",
+      "expect": { "result": "UNPARSED" }
+    }
+  ],
+  "timeCases": [
+    ["10:56 AM", "10:56"],
+    ["1:05 PM", "13:05"],
+    ["12:30 AM", "00:30"],
+    ["12:30 PM", "12:30"],
+    ["16:44", "16:44"]
+  ],
+  "noticeDedup": [
+    {
+      "id": "airtel_apy_sent_three_days_running",
+      "sender": "AX-AIRBNK-S",
+      "same": [
+        "Rs.5293.0 auto-debited from Airtel Payments Bank a/c 04-Sep-2026 towards Atal Pension Yojana Please maintain sufficient balance in the A/c",
+        "Rs.5293.0 auto-debited from Airtel Payments Bank a/c 04-Sep-2026 towards Atal Pension Yojana\nPlease maintain sufficient balance in the A/c",
+        "Rs.5293.0   auto-debited from Airtel Payments Bank a/c 04-Sep-2026 towards Atal Pension Yojana Please maintain sufficient balance in the A/c"
+      ],
+      "different": [
+        "Rs.5293.0 auto-debited from Airtel Payments Bank a/c 04-Oct-2026 towards Atal Pension Yojana Please maintain sufficient balance in the A/c",
+        "Rs.5400.0 auto-debited from Airtel Payments Bank a/c 04-Sep-2026 towards Atal Pension Yojana Please maintain sufficient balance in the A/c"
+      ]
+    }
+  ],
+  "senderCases": [
+    ["AX-KOTAKB-S", { "prefix": "AX", "brand": "KOTAKB", "kind": "S" }],
+    ["VM-FEDBNK-T", { "prefix": "VM", "brand": "FEDBNK", "kind": "T" }],
+    ["AD-CUBLTD-S", { "prefix": "AD", "brand": "CUBLTD", "kind": "S" }],
+    ["JM-TMBANK-S", { "prefix": "JM", "brand": "TMBANK", "kind": "S" }],
+    ["VA-MONVEW-S", { "prefix": "VA", "brand": "MONVEW", "kind": "S" }],
+    ["AX-AIRBNK-S", { "prefix": "AX", "brand": "AIRBNK", "kind": "S" }],
+    ["VM-FEDBNK", { "prefix": "VM", "brand": "FEDBNK", "kind": null }],
+    ["+919800000000", null],
+    ["", null]
+  ],
+  "paiseCases": [
+    ["9261.34", 926134],
+    ["45,333.00", 4533300],
+    ["500", 50000],
+    ["1,00,000.5", 10000050],
+    ["0.07", 7],
+    ["15720.22", 1572022]
+  ]
+}

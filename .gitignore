@@ -1,0 +1,23 @@
+# Real SMS samples, backups and exports contain personal financial data. Never commit them.
+private/
+*.db
+*.sqlite
+*.sqlcipher
+*.backup
+exports/
+
+# Android / Gradle
+.gradle/
+build/
+local.properties
+*.apk
+*.aab
+.idea/
+
+# Project-local toolchain (JDK, Gradle, Android SDK, caches). Delete this folder to uninstall everything.
+.toolchain/
+
+# Kotlin / signing
+.kotlin/
+*.jks
+*.keystore

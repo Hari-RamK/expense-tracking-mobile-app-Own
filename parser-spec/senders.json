@@ -1,0 +1,18 @@
+{
+  "notes": [
+    "SMS sender header format is <operator/circle prefix>-<BRAND>-<suffix>, e.g. AX-KOTAKB-S. Only the BRAND identifies the institution; prefix and suffix vary per message.",
+    "Seeded ONLY from headers actually observed in the owner's inbox. Unknown brands are never guessed: the app asks once and stores the mapping.",
+    "One institution can use several brands (CUB: CUBLTD and CUBANK).",
+    "muted: brands whose messages the owner does not want. They are ignored before parsing and their bodies are not stored."
+  ],
+  "brands": {
+    "KOTAKB": { "institution": "KOTAK", "kind": "BANK" },
+    "CUBLTD": { "institution": "CUB", "kind": "BANK" },
+    "CUBANK": { "institution": "CUB", "kind": "BANK" },
+    "FEDBNK": { "institution": "FEDERAL", "kind": "BANK" },
+    "TMBANK": { "institution": "TMB", "kind": "BANK" },
+    "AIRBNK": { "institution": "AIRTEL_PAYMENTS_BANK", "kind": "BANK" },
+    "ICICIP": { "institution": "ICICI_LIFE", "kind": "INSURER" }
+  },
+  "muted": ["MONVEW"]
+}
