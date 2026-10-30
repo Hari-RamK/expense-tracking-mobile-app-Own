@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Buhoverse owl: dollar signs in the eyes. Full-colour, transparent background. Designed on a 108 grid
+     with the owl inside the adaptive-icon safe zone, so it can be the launcher foreground as well. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <group android:translateX="6.5" android:translateY="7" android:scaleX="0.88" android:scaleY="0.88">
+        <!-- ear tufts -->
+        <path android:fillColor="#B9742A" android:pathData="M28,38 L31,23 L46,31 Z" />
+        <path android:fillColor="#B9742A" android:pathData="M80,38 L77,23 L62,31 Z" />
+        <!-- body -->
+        <path android:fillColor="#D9A441"
+            android:pathData="M54,29 C71,29 82,41 82,57 C82,74 70,86 54,86 C38,86 26,74 26,57 C26,41 37,29 54,29 Z" />
+        <!-- belly and chest feathers -->
+        <path android:fillColor="#F6E3B4" android:pathData="M39,73 a15,12 0 1,0 30,0 a15,12 0 1,0 -30,0" />
+        <path android:strokeColor="#B9742A" android:strokeWidth="1.6" android:strokeLineCap="round" android:fillColor="#00000000"
+            android:pathData="M46,76 q2,3 4,0 M54,79 q2,3 4,0 M50,82 q2,3 4,0" />
+        <!-- eyes -->
+        <path android:fillColor="#FFF8E7" android:strokeColor="#7A4A14" android:strokeWidth="2.2"
+            android:pathData="M27,54 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0" />
+        <path android:fillColor="#FFF8E7" android:strokeColor="#7A4A14" android:strokeWidth="2.2"
+            android:pathData="M55,54 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0" />
+        <!-- dollar signs -->
+        <group android:translateX="40" android:translateY="54" android:scaleX="0.7" android:scaleY="0.7">
+            <path android:strokeColor="#15803D" android:strokeWidth="3.4" android:strokeLineCap="round" android:strokeLineJoin="round"
+                android:fillColor="#00000000"
+                android:pathData="M6,-6 C6,-11 -6,-11 -6,-5 C-6,1 6,1 6,7 C6,13 -6,13 -6,8 M0,-14 L0,14" />
+        </group>
+        <group android:translateX="68" android:translateY="54" android:scaleX="0.7" android:scaleY="0.7">
+            <path android:strokeColor="#15803D" android:strokeWidth="3.4" android:strokeLineCap="round" android:strokeLineJoin="round"
+                android:fillColor="#00000000"
+                android:pathData="M6,-6 C6,-11 -6,-11 -6,-5 C-6,1 6,1 6,7 C6,13 -6,13 -6,8 M0,-14 L0,14" />
+        </group>
+        <!-- beak -->
+        <path android:fillColor="#E8590C" android:pathData="M50,62 L58,62 L54,71 Z" />
+    </group>
+</vector>

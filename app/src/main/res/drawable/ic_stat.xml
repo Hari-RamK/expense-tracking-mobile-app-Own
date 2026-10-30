@@ -1,4 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notification icon: the owl silhouette, cropped tight. Android tints it white. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
-    <path android:fillColor="#FFFFFFFF" android:pathData="M5,4h14v3H9.5v3H17v3H9.5v7H5z" />
+    android:width="24dp" android:height="24dp" android:viewportWidth="62" android:viewportHeight="62">
+    <group android:translateX="-22" android:translateY="-22">
+        <path android:fillColor="#FFFFFF" android:pathData="M28,38 L31,23 L46,31 Z M80,38 L77,23 L62,31 Z" />
+        <path android:fillColor="#FFFFFF"
+            android:pathData="M54,29 C71,29 82,41 82,57 C82,74 70,86 54,86 C38,86 26,74 26,57 C26,41 37,29 54,29 Z M27,54 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0 M55,54 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0" />
+        <path android:strokeColor="#FFFFFF" android:strokeWidth="3" android:strokeLineCap="round" android:fillColor="#00000000"
+            android:pathData="M37,48 C37,45 43,45 43,49 C43,52 37,52 37,55 C37,58 43,58 43,56 M40,44 L40,60 M65,48 C65,45 71,45 71,49 C71,52 65,52 65,55 C65,58 71,58 71,56 M68,44 L68,60" />
+    </group>
 </vector>

@@ -1,6 +1,11 @@
 package app.fintrack.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.res.painterResource
+import app.fintrack.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +49,20 @@ import app.fintrack.data.AppSnapshot
 import app.fintrack.sms.hasSmsPermission
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
+/** The Buhoverse owl (dollar signs in its eyes) beside the app name. */
+@Composable
+fun BrandHeader(modifier: Modifier = Modifier) {
+    Row(modifier, verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+        Box(Modifier.size(52.dp).clip(CircleShape).background(Color(0xFF1F2A44))) {
+            Image(painterResource(R.drawable.ic_owl), contentDescription = "Buhoverse owl logo", modifier = Modifier.fillMaxSize().scale(1.3f))
+        }
+        Column(Modifier.padding(start = 12.dp)) {
+            Text("Buho FinTrack", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+            Muted("by Buhoverse")
+        }
+    }
+}
+
 @Composable
 fun HomeScreen(vm: AppViewModel, snapshot: AppSnapshot, onOpenReview: () -> Unit, onOpenEntry: (Long) -> Unit, onOpenAccounts: () -> Unit, requestSms: () -> Unit) {
     val context = LocalContext.current
@@ -53,8 +73,8 @@ fun HomeScreen(vm: AppViewModel, snapshot: AppSnapshot, onOpenReview: () -> Unit
     val smsOk = hasSmsPermission(context)
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
-        Text("Overview", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-        Muted("$today · transfers are never counted as spending or income")
+        BrandHeader()
+        Muted("$today · transfers are never counted as spending or income", Modifier.padding(top = 8.dp))
         Spacer(Modifier.height(12.dp))
 
         if (snapshot.profile.accounts.isEmpty()) {

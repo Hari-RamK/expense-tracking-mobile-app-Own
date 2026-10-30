@@ -176,7 +176,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 repository.restore(snapshot, overlay)
                 _message.value = "Restored ${snapshot.entries.size} transactions."
             } catch (e: WrongPassphraseException) {
-                _message.value = "Wrong passphrase, or this is not a FinTrack backup."
+                _message.value = "Wrong passphrase, or this is not a Buho FinTrack backup."
             } finally {
                 _busy.value = false
             }

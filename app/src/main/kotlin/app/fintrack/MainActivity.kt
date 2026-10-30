@@ -106,7 +106,7 @@ class MainActivity : FragmentActivity() {
             },
         )
         prompt.authenticate(
-            BiometricPrompt.PromptInfo.Builder().setTitle("Unlock FinTrack").setAllowedAuthenticators(authenticators)
+            BiometricPrompt.PromptInfo.Builder().setTitle("Unlock Buho FinTrack").setAllowedAuthenticators(authenticators)
                 .apply { if (Build.VERSION.SDK_INT < 30) setNegativeButtonText("Cancel") }.build(),
         )
     }
@@ -130,7 +130,7 @@ class MainActivity : FragmentActivity() {
     @Composable
     private fun LockScreen(onUnlock: () -> Unit) {
         Column(Modifier.fillMaxSize().padding(24.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-            Text("FinTrack is locked", style = MaterialTheme.typography.headlineSmall)
+            Text("Buho FinTrack is locked", style = MaterialTheme.typography.headlineSmall)
             Button(onClick = onUnlock, modifier = Modifier.padding(top = 16.dp)) { Text("Unlock") }
         }
     }

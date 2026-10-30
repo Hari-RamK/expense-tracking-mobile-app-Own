@@ -1,4 +1,6 @@
-# FinTrack: private, local-first personal finance tracker (Android)
+# Buho FinTrack by Buhoverse
+
+Private, local-first personal finance tracker for Android. Buhoverse is an owl-themed company; the logo is an owl with dollar signs in its eyes.
 
 Reads bank, UPI and card SMS **on the phone only**, builds a ledger, never double-counts money you move between your
 own accounts, and produces day / week / month reports in a spreadsheet-style layout, plus a nightly spending notification.
@@ -40,11 +42,11 @@ node parser-spec/run.mjs                 # same parser fixtures through the lang
 
 1. Enable *Developer options* and *USB debugging* on the phone, connect it, then `adb install -r app\build\outputs\apk\debug\app-debug.apk`
    (adb is in `.toolchain\android-sdk\platform-tools`), or copy the APK to the phone and open it.
-2. Open FinTrack. On Android 13+ a sideloaded app may need **Settings > Apps > FinTrack > ⋮ > Allow restricted settings** before the SMS permission can be granted.
+2. Open Buho FinTrack. On Android 13+ a sideloaded app may need **Settings > Apps > Buho FinTrack > ⋮ > Allow restricted settings** before the SMS permission can be granted.
 3. **Accounts** tab: add each bank account and card (bank key, and the digits the SMS shows, e.g. `2126`). **Settings**: add your name exactly as it appears in UPI messages (this is how your own transfers are recognised), allow SMS and notifications, then **Read SMS now**.
 4. Open **Needs your attention** from Home to decide anything uncertain.
 
-A release build for distribution must be signed with your own key; the one used in testing was a throwaway.
+The app id is `com.buhoverse.fintrack`. A release build for distribution must be signed with your own key; the one used in testing was a throwaway.
 
 ## What is verified (and what is not)
 

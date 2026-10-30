@@ -162,7 +162,7 @@ fun SettingsScreen(
         OutlinedButton(onClick = { confirmErase = true }) { Text("Erase everything", color = MaterialTheme.colorScheme.error) }
 
         HorizontalDivider(Modifier.padding(vertical = 16.dp))
-        Muted("FinTrack 0.1.0 · GPL-3.0-or-later · nothing is sent to any server: the app has no network access.")
+        Muted("Buho FinTrack 0.1.0 by Buhoverse · GPL-3.0-or-later · nothing is sent to any server: the app has no network access.")
         Spacer(Modifier.height(24.dp))
     }
 

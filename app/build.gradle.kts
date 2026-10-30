@@ -9,7 +9,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "app.fintrack"
+        applicationId = "com.buhoverse.fintrack"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
