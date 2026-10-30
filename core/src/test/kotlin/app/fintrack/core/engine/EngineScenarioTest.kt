@@ -417,7 +417,7 @@ class EngineScenarioTest {
         assertEquals(10_000, nov.previousTotals.totalSpentPaise)
         val sat = Period.week(LocalDate.of(2026, 10, 31))
         assertEquals(LocalDate.of(2026, 10, 26), sat.start)
-        assertEquals(LocalDate.of(2026, 11, 1), sat.end)
+        assertEquals(LocalDate.of(2026, 10, 31), sat.end, "a week never crosses into the next month")
     }
 
     @Test

@@ -149,11 +149,15 @@ fun ReportScreen(vm: AppViewModel, snapshot: AppSnapshot, onOpenEntry: (Long) ->
 private fun ReportBody(r: PeriodReport, onOpenEntry: (Long) -> Unit) {
     val t = r.totals
     val prev = r.previousTotals.totalSpentPaise
-    val change = if (prev > 0) (t.totalSpentPaise - prev) * 100 / prev else null
+    val previousPeriod = r.period.previous()
+    // A percentage is only fair between periods of the same length (weeks are clipped to the month).
+    val change = if (prev > 0 && previousPeriod.lengthDays == r.period.lengthDays) (t.totalSpentPaise - prev) * 100 / prev else null
+    val previousHint = change?.let { if (it <= 0) "${-it}% less than before" else "$it% more than before" }
+        ?: "Previous (${previousPeriod.shortLabel}): ${formatInr(prev)}"
 
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         StatCard("Total spent", formatInr(t.totalSpentPaise), Modifier.weight(1f), Palette.Ink,
-            hint = change?.let { if (it <= 0) "${-it}% less than before" else "$it% more than before" } ?: "no earlier period")
+            hint = previousHint)
         StatCard("Income", formatInr(t.incomePaise), Modifier.weight(1f), Palette.Green)
     }
     Spacer(Modifier.height(10.dp))

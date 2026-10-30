@@ -52,13 +52,21 @@ object Notifications {
 
     private fun topReason(r: PeriodReport): String? = r.topReasons.firstOrNull()?.let { "${it.name} (${formatInr(it.amountPaise)})" }
 
+    /**
+     * Weeks are clipped to the month, so a week can be shorter than 7 days. A percentage is only given when the
+     * previous period is the same length; otherwise the previous period's spending is simply stated.
+     */
     fun weekly(r: PeriodReport): NotificationContent {
         val spent = r.totals.totalSpentPaise
-        val cmp = pct(spent, r.previousTotals.totalSpentPaise)
+        val previous = r.period.previous()
+        val prevSpent = r.previousTotals.totalSpentPaise
+        val sameLength = previous.lengthDays == r.period.lengthDays
         val sentence = buildString {
-            append("This week you spent ${formatInr(spent)}")
+            append(if (r.period.lengthDays < 7) "This part-week (${r.period.shortLabel}) you spent ${formatInr(spent)}" else "This week you spent ${formatInr(spent)}")
+            val cmp = if (sameLength) pct(spent, prevSpent) else null
             if (cmp != null) append(", $cmp last week")
             append(".")
+            if (cmp == null && prevSpent > 0) append(" Previous (${previous.shortLabel}): ${formatInr(prevSpent)}.")
             topReason(r)?.let { append(" Biggest: $it.") }
             append(" Transfers excluded.")
         }

@@ -28,7 +28,6 @@ import app.fintrack.core.report.ReportBuilder
 import app.fintrack.data.Repository
 import app.fintrack.data.Settings
 import app.fintrack.sms.hasSmsPermission
-import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
@@ -106,7 +105,9 @@ class Notifier(private val context: Context, private val repository: Repository,
         val s = settings.state.value
         val coverage = if (hasSmsPermission(context)) null else "SMS access is off, so these totals may be incomplete."
         if (s.dailyEnabled) post(Notifications.daily(report(Period.day(date), date), coverage), CHANNEL_SUMMARY)
-        if (s.weeklyEnabled && date.dayOfWeek == DayOfWeek.SUNDAY) post(Notifications.weekly(report(Period.week(date), date)), CHANNEL_SUMMARY)
+        // A week ends on Sunday, or on the last day of the month when the month ends mid-week.
+        val week = Period.week(date)
+        if (s.weeklyEnabled && week.end == date) post(Notifications.weekly(report(week, date)), CHANNEL_SUMMARY)
         if (s.monthlyEnabled && date == YearMonth.from(date).atEndOfMonth()) {
             post(Notifications.monthly(report(Period.month(date), date)), CHANNEL_SUMMARY)
         }

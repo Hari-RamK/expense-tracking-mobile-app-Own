@@ -57,12 +57,23 @@ class NotificationsTest {
     }
 
     @Test
-    fun `weekly compares with the previous week`() {
+    fun `weekly compares a full week with the previous full week`() {
+        val e = TestKit.engine()
+        e.ingest(TestKit.sms("Sent Rs.1000.00 from Kotak Bank A/c X2126 to SHOP A on 08-10-26. UPI Ref 1", "AX-KOTAKB-S"))
+        e.ingest(TestKit.sms("Sent Rs.800.00 from Kotak Bank A/c X2126 to SHOP B on 15-10-26. UPI Ref 2", "AX-KOTAKB-S"))
+        val n = Notifications.weekly(report(e, Period.week(LocalDate.of(2026, 10, 15))))
+        assertTrue("This week you spent ₹800" in n.text && "20% less than last week" in n.text, n.text)
+    }
+
+    @Test
+    fun `a part-week is not given a misleading percentage, the previous spending is stated instead`() {
         val e = TestKit.engine()
         e.ingest(TestKit.sms("Sent Rs.1000.00 from Kotak Bank A/c X2126 to SHOP A on 21-10-26. UPI Ref 1", "AX-KOTAKB-S"))
         e.ingest(TestKit.sms("Sent Rs.800.00 from Kotak Bank A/c X2126 to SHOP B on 28-10-26. UPI Ref 2", "AX-KOTAKB-S"))
         val n = Notifications.weekly(report(e, Period.week(asOf)))
-        assertTrue("This week you spent ₹800" in n.text && "20% less than last week" in n.text, n.text)
+        assertTrue("part-week (Mon 26 Oct – Sat 31 Oct) you spent ₹800" in n.text, n.text)
+        assertTrue("Previous (Mon 19 Oct – Sun 25 Oct): ₹1,000" in n.text, n.text)
+        assertFalse("%" in n.text, n.text)
     }
 
     @Test

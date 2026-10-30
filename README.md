@@ -16,13 +16,21 @@ Status: working Android app (v0.1.0). Verified on an Android 35 emulator, not ye
 - **Notifications**: daily (night, default 22:00), weekly, monthly, optional daily limit alert. One per period, no amounts on the lock screen unless you turn that on.
 - **Privacy**: encrypted database (SQLCipher, key protected by the Android Keystore), optional fingerprint/screen-lock gate, screenshots blocked by default, passphrase-encrypted backups, CSV export, erase-everything.
 
+## Reporting periods
+
+- **Month:** the 1st to the last day of the calendar month (28, 29, 30 or 31 days).
+- **Week:** Monday to Sunday, **clipped to the month**, so a week never crosses a month boundary. If the 30th is a Monday and the 1st a Tuesday, Monday 30th is a one-day week of the old month and the new month's first week runs Tuesday 1st to Sunday 6th. The weeks of a month always cover it exactly once.
+- **Previous:** a period's "previous" is the period just before it, so the new month's first week shows Monday 30th's spending as its previous. A percentage change is only shown between periods of equal length; otherwise the previous spending is stated plainly.
+- **Day:** midnight to midnight in your time zone, using the transaction date from the SMS.
+- The weekly notification goes out on Sunday night, or on the last night of the month when the month ends mid-week.
+
 ## Build and run
 
 Everything needed lives in `.toolchain/` inside this folder (JDK 17, Gradle, Android SDK). Nothing is installed system-wide.
 
 ```powershell
 . .\tools\dev-env.ps1                    # session-only environment
-.\gradlew.bat :core:test                 # 102 JVM tests: parser, ledger, transfers, reports, notifications
+.\gradlew.bat :core:test                 # 109 JVM tests: parser, ledger, transfers, reports, notifications
 node parser-spec/run.mjs                 # same parser fixtures through the language-neutral harness
 .\gradlew.bat :app:assembleDebug         # app/build/outputs/apk/debug/app-debug.apk
 .\gradlew.bat :app:connectedDebugAndroidTest   # on-device tests (needs an emulator or phone)
@@ -42,7 +50,7 @@ A release build for distribution must be signed with your own key; the one used 
 
 | Verified | How |
 |---|---|
-| Parser, dedup, transfer matching, card dues, reports, notification text | 102 JVM tests, including the PRD's salary-split scenario and the critical invariants |
+| Parser, dedup, transfer matching, card dues, reports, notification text | 109 JVM tests, including the PRD's salary-split scenario and the critical invariants |
 | Encrypted database, Keystore key, restart persistence, encrypted backup round-trip, wrong-passphrase rejection | on-device test, Android 35 emulator |
 | Live SMS while the app is in the background, duplicate across two senders merged, phone-number sender ignored | emulator `sms send`, checked on screen |
 | Notification content, one per period, amount-free lock-screen version | on-device test |
